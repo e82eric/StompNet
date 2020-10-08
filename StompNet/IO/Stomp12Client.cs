@@ -28,7 +28,6 @@ namespace StompNet.IO
     /// </summary>
     public class Stomp12Client : StompClient
     {
-
         /// <summary>
         /// Constructor of a client for STOMP 1.2.
         /// </summary>
@@ -39,6 +38,37 @@ namespace StompNet.IO
         /// <param name="useRandomNumberGenerator">Flag to indicate random numbers must 
         /// be used when creating sequence numbers for receipts, subscriptions and transactions</param>
         public Stomp12Client(Stream stream, TimeSpan? retryInterval = null, bool useRandomNumberGenerator = false)
+            : this(new StreamTransport(stream), new StreamTransport(stream), retryInterval, useRandomNumberGenerator)
+        {
+
+        }
+
+        /// <summary>
+        /// Constructor of a client for STOMP 1.2.
+        /// </summary>
+        /// <param name="inStream">Stream for incoming data from STOMP service.</param>
+        /// <param name="outStream">Stream for outgoing data to STOMP service.</param>
+        /// <param name="retryInterval">When sending messages that requires receipt confirmation,
+        /// this interval specifies how much time to wait before sending the frame again if 
+        /// no receipt is received.</param>
+        /// <param name="useRandomNumberGenerator">Flag to indicate random numbers must 
+        /// be used when creating sequence numbers for receipts, subscriptions and transactions</param>
+        public Stomp12Client(Stream inStream, Stream outStream, TimeSpan? retryInterval = null, bool useRandomNumberGenerator = false)
+            : base(new Stomp12FrameReader(inStream), new Stomp12FrameWriter(outStream), retryInterval, true, useRandomNumberGenerator)
+        {
+
+        }
+
+        /// <summary>
+        /// Constructor of a client for STOMP 1.2.
+        /// </summary>
+        /// <param name="stream">Stream for incoming/outgoing data from/to STOMP service.</param>
+        /// <param name="retryInterval">When sending messages that require receipt confirmation,
+        /// this interval specifies how much time to wait before sending the frame again if 
+        /// no receipt is received.</param>
+        /// <param name="useRandomNumberGenerator">Flag to indicate random numbers must 
+        /// be used when creating sequence numbers for receipts, subscriptions and transactions</param>
+        public Stomp12Client(IStream stream, TimeSpan? retryInterval = null, bool useRandomNumberGenerator = false)
             : this (stream, stream, retryInterval, useRandomNumberGenerator)
         {
             
@@ -54,7 +84,7 @@ namespace StompNet.IO
         /// no receipt is received.</param>
         /// <param name="useRandomNumberGenerator">Flag to indicate random numbers must 
         /// be used when creating sequence numbers for receipts, subscriptions and transactions</param>
-        public Stomp12Client(Stream inStream, Stream outStream, TimeSpan? retryInterval = null, bool useRandomNumberGenerator = false)
+        public Stomp12Client(IStream inStream, IStream outStream, TimeSpan? retryInterval = null, bool useRandomNumberGenerator = false)
             : base (new Stomp12FrameReader(inStream), new Stomp12FrameWriter(outStream), retryInterval, true, useRandomNumberGenerator)
         {
             

@@ -39,7 +39,7 @@ namespace StompNet
 
         private readonly CancellationTokenSource _cts;
         private readonly StompClient _client;
-        
+
         /// <summary>
         /// Constructor of a connector for STOMP 1.2.
         /// </summary>
@@ -54,8 +54,54 @@ namespace StompNet
         /// <param name="useRandomNumberGenerator">Flag to indicate random numbers must 
         /// be used when creating sequence numbers for receipts, subscriptions and transactions</param>
         public Stomp12Connector(
-            Stream inStream, 
-            Stream outStream, 
+            Stream inStream,
+            Stream outStream,
+            string host,
+            string user = null,
+            string password = null,
+            TimeSpan? retryInterval = null,
+            bool useRandomNumberGenerator = false) : this(new StreamTransport(inStream), new StreamTransport(outStream), host, user, password, retryInterval, useRandomNumberGenerator)
+        {
+        }
+
+        /// <summary>
+        /// Constructor of a connector for STOMP 1.2.
+        /// </summary>
+        /// <param name="stream">Stream for incoming/outgoing data from/to STOMP service.</param>
+        /// <param name="host">Virtual host to connect to STOMP service.</param>
+        /// <param name="user">Username to authenticate to STOMP service.</param>
+        /// <param name="password">Password to authenticate to STOMP service.</param>
+        /// <param name="retryInterval">When sending messages that require receipt confirmation,
+        /// this interval specifies how much time to wait before sending the frame again if 
+        /// no receipt is received.</param>
+        /// <param name="useRandomNumberGenerator">Flag to indicate random numbers must 
+        /// be used when creating sequence numbers for receipts, subscriptions and transactions</param>
+        public Stomp12Connector(
+            Stream stream,
+            string host,
+            string user = null,
+            string password = null,
+            TimeSpan? retryInterval = null,
+            bool useRandomNumberGenerator = false)
+            : this(stream, stream, host, user, password, retryInterval, useRandomNumberGenerator)
+        { }
+
+        /// <summary>
+        /// Constructor of a connector for STOMP 1.2.
+        /// </summary>
+        /// <param name="inStream">Stream for incoming data from STOMP service.</param>
+        /// <param name="outStream">Stream for outgoing data to STOMP service.</param>
+        /// <param name="host">Virtual host to connect to STOMP service.</param>
+        /// <param name="user">Username to authenticate to STOMP service.</param>
+        /// <param name="password">Password to authenticate to STOMP service.</param>
+        /// <param name="retryInterval">When sending messages that requires receipt confirmation,
+        /// this interval specifies how much time to wait before sending the frame again if 
+        /// no receipt is received.</param>
+        /// <param name="useRandomNumberGenerator">Flag to indicate random numbers must 
+        /// be used when creating sequence numbers for receipts, subscriptions and transactions</param>
+        public Stomp12Connector(
+            IStream inStream,
+            IStream outStream, 
             string host, 
             string user = null, 
             string password = null,
@@ -86,7 +132,7 @@ namespace StompNet
         /// <param name="useRandomNumberGenerator">Flag to indicate random numbers must 
         /// be used when creating sequence numbers for receipts, subscriptions and transactions</param>
         public Stomp12Connector(
-            Stream stream, 
+            IStream stream, 
             string host, 
             string user = null, 
             string password = null,

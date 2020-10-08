@@ -19,6 +19,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -55,7 +56,17 @@ namespace StompNet.IO
         /// <param name="stream">The stream to write to.</param>
         /// <param name="initialBufferCapacity">Initial write buffer capacity.</param>
         /// <param name="maxBufferCapacity">Maximum write buffer capacity.</param>
-        public Stomp12FrameWriter(Stream stream, int initialBufferCapacity = AsyncStreamWriter.DefaultIniBufferCapacity, int maxBufferCapacity = AsyncStreamWriter.DefaultMaxBufferCapacity)
+        public Stomp12FrameWriter(Stream stream, int initialBufferCapacity = AsyncStreamWriter.DefaultIniBufferCapacity, int maxBufferCapacity = AsyncStreamWriter.DefaultMaxBufferCapacity) : this(new StreamTransport(stream), initialBufferCapacity, maxBufferCapacity)
+        {
+        }
+
+        /// <summary>
+        /// Constructor for a STOMP 1.2 frame writer.
+        /// </summary>
+        /// <param name="stream">The stream to write to.</param>
+        /// <param name="initialBufferCapacity">Initial write buffer capacity.</param>
+        /// <param name="maxBufferCapacity">Maximum write buffer capacity.</param>
+        public Stomp12FrameWriter(IStream stream, int initialBufferCapacity = AsyncStreamWriter.DefaultIniBufferCapacity, int maxBufferCapacity = AsyncStreamWriter.DefaultMaxBufferCapacity)
         {
             _writer = new AsyncStreamWriter(stream, Encoding.UTF8, initialBufferCapacity, maxBufferCapacity);
             _writerOwner = true;

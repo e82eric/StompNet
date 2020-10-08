@@ -36,10 +36,10 @@ namespace StompNet.IO
         private int _count;
         private readonly int _maxBufferCapacity;
 
-        private readonly Stream _stream;
+        private readonly IStream _stream;
         private readonly Encoder _encoder;
-        
-        public AsyncStreamWriter(Stream stream, Encoding encoding, int initialBufferCapacity = DefaultIniBufferCapacity, int maxBufferCapacity = DefaultMaxBufferCapacity)
+
+        public AsyncStreamWriter(IStream stream, Encoding encoding, int initialBufferCapacity = DefaultIniBufferCapacity, int maxBufferCapacity = DefaultMaxBufferCapacity)
         {
             if (initialBufferCapacity < 4)
                 throw new ArgumentOutOfRangeException("initialBufferCapacity");
@@ -53,7 +53,7 @@ namespace StompNet.IO
             _encoder = encoding.GetEncoder();
         }
 
-        public AsyncStreamWriter(Stream stream, int initialBufferCapacity = DefaultIniBufferCapacity, int maxBufferCapacity = DefaultMaxBufferCapacity)
+        public AsyncStreamWriter(IStream stream, int initialBufferCapacity = DefaultIniBufferCapacity, int maxBufferCapacity = DefaultMaxBufferCapacity)
             : this (stream, Encoding.UTF8, initialBufferCapacity, maxBufferCapacity)
         {
             
@@ -68,7 +68,7 @@ namespace StompNet.IO
             }
             else
             {
-                _stream.WriteByte(value);
+                await _stream.WriteByteAsync(value, cancellationToken);
             }
         }
 

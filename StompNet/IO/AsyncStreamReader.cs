@@ -31,8 +31,7 @@ namespace StompNet.IO
     /// </summary>
     internal sealed class AsyncStreamReader : IDisposable
     {
-        private readonly bool _bufferedStreamOwner;
-        private readonly Stream _stream;
+        private readonly IStream _stream;
         private readonly Decoder _decoder;
         
         private readonly byte[] _oneByte;
@@ -40,14 +39,9 @@ namespace StompNet.IO
         private readonly MemoryStream _memoryStream;
         private readonly StringBuilder _stringBuilder;
 
-        public AsyncStreamReader(Stream stream, Encoding encoding = null, int? bufferCapacity = null)
+        public AsyncStreamReader(IStream stream, Encoding encoding = null, int? bufferCapacity = null)
         {
-            _bufferedStreamOwner = !(stream is BufferedStream) || bufferCapacity.HasValue;
-            
-            _stream = 
-                ! _bufferedStreamOwner ? stream // CAREFUL! This is a negative(!) condition.
-                : bufferCapacity == null ? new BufferedStream(stream)
-                : new BufferedStream(stream, bufferCapacity.Value);
+            _stream = stream;
 
             _decoder = (encoding ?? Encoding.UTF8).GetDecoder();
 
@@ -176,8 +170,6 @@ namespace StompNet.IO
 
         public void Dispose()
         {
-            if(_bufferedStreamOwner)
-                _stream.Dispose();
             _memoryStream.Dispose();
         }
 

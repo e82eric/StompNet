@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -56,7 +57,16 @@ namespace StompNet.IO
         /// </summary>
         /// <param name="stream">The stream to read from.</param>
         /// <param name="bufferCapacity">The read buffer size.</param>
-        public Stomp12FrameReader(Stream stream, int? bufferCapacity = null)
+        public Stomp12FrameReader(Stream stream, int? bufferCapacity = null) : this(new StreamTransport(stream), bufferCapacity)
+        {
+        }
+
+        /// <summary>
+        /// Constructor for a STOMP 1.2 frame reader.
+        /// </summary>
+        /// <param name="stream">The stream to read from.</param>
+        /// <param name="bufferCapacity">The read buffer size.</param>
+        public Stomp12FrameReader(IStream stream, int? bufferCapacity = null)
         {
             _reader = new AsyncStreamReader(stream, Encoding.UTF8, bufferCapacity);
             _readerOwner = true;
